@@ -8,51 +8,39 @@ export default [
     meta: {
       nav: {
         icon: "el-icon-s-platform",
-        title: "三级导航",
+        title: "权限管理",
       },
       breadcrumb: {
-        title: "三级导航",
+        title: "权限管理",
       },
     },
     children: [
       {
-        path: "two",
-        name: "ThreeTwo",
-        component: { render: (h) => h("router-view") },
+        path: "manager",
+        name: "ThreeTwoOne",
+        // redirect: { name: "ThreeTwoOneSelf" },
+        component: ThreeTwoOne,
         meta: {
-          nav: {
-            title: "子导航",
-          },
           breadcrumb: {
-            title: "子导航",
+            title: "管理员",
+            replace: true,
           },
+          // title: "权限管理-管理员",
+          // nav: {    又产生一级
+          //   title: "管理员",
+          // },
         },
         children: [
           {
-            path: "one",
+            path: "",
             name: "ThreeTwoOne",
-            redirect: { name: "ThreeTwoOneSelf" },
-            component: { render: (h) => h("router-view") },
+            component: ThreeTwoOne,
             meta: {
-              breadcrumb: {
-                title: "子子导航",
-                replace: true,
+              title: "权限管理-管理员",
+              nav: {
+                title: "管理员",
               },
             },
-            children: [
-              {
-                path: "",
-                name: "ThreeTwoOneSelf",
-                component: ThreeTwoOne,
-                // permission: "",
-                meta: {
-                  title: "三级导航-子导航-子子导航",
-                  nav: {
-                    title: "子子导航",
-                  },
-                },
-              },
-            ],
           },
         ],
       },

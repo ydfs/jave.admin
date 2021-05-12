@@ -1,4 +1,5 @@
 import TwoOne from "@/views/TwoOne";
+// import ThreeTwoOne from "@/views/ThreeTwoOne";
 
 export default [
   {
@@ -11,21 +12,21 @@ export default [
           class: "nav-svg",
           name: "homework",
         },
-        title: "二级导航",
+        title: "剧本管理",
       },
       breadcrumb: {
-        title: "二级导航",
+        title: "剧本管理",
       },
     },
     children: [
       {
-        path: "one",
+        path: "sort",
         name: "TwoOne",
         redirect: { name: "TwoOneSelf" },
         component: { render: (h) => h("router-view") },
         meta: {
           breadcrumb: {
-            title: "子导航",
+            title: "剧本分类",
             replace: true,
           },
         },
@@ -36,9 +37,34 @@ export default [
             component: TwoOne,
             // permission: "",
             meta: {
-              title: "二级导航-子导航",
+              title: "剧本管理-剧本分类",
               nav: {
-                title: "子导航",
+                title: "剧本分类",
+              },
+            },
+          },
+        ],
+      },
+      {
+        path: "list",
+        name: "TwoOne",
+        redirect: { name: "TwoOneSelf" },
+        component: { render: (h) => h("router-view") },
+        meta: {
+          breadcrumb: {
+            title: "剧本列表",
+            replace: false,
+          },
+        },
+        children: [
+          {
+            path: "",
+            name: "TwoOneSelf",
+            component: TwoOne,
+            meta: {
+              title: "剧本管理-剧本列表",
+              nav: {
+                title: "剧本列表",
               },
             },
           },
