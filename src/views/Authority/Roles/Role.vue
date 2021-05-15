@@ -3,7 +3,9 @@
     <bread-crumb></bread-crumb>
     <button class="add" @click="addRole">添加角色</button>
     <el-table :data="tableData" border stripe style="width: 100%">
-      <el-table-column prop="id" label="序号"></el-table-column>
+      <el-table-column label="序号">
+        <template slot-scope="scope">{{ scope.$index + 1 }}</template>
+      </el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="display_name" label="展示名称"> </el-table-column>
       <el-table-column prop="description" label="描述"> </el-table-column>
@@ -13,10 +15,7 @@
             >详情</el-button
           >
           <span class="separator"></span>
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleDelete(scope.$index, scope.row)"
+          <el-button size="mini" type="text" @click="handleDelete(scope.row)"
             >删除</el-button
           >
         </template>
@@ -34,18 +33,25 @@ export default {
     };
   },
   created() {
-    Role.getList().then((res) => {
-      this.tableData = res.data;
-      // console.log(res);
-    });
+    this.getList();
   },
   methods: {
+    getList() {
+      Role.getList().then((res) => {
+        this.tableData = res.data.reverse();
+        // console.log(res);
+      });
+    },
     handleEdit(row) {
       this.$router.push({ name: "edit", params: { id: String(row.id) } });
     },
-    // handleDelete(index, row) {
-    //   // this.$store.commit("AUTH", {});
-    // },
+    handleDelete(row) {
+      Role.deleteDetail(row.id).then((res) => {
+        this.$message.success(res.msg);
+        this.getList();
+        console.log(res);
+      });
+    },
     addRole() {
       this.$router.push({ name: "add" });
     },

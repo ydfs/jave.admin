@@ -27,5 +27,8 @@ const Role = {
       permission_ids,
     });
   },
+  deleteDetail: (id) => {
+    return request.delete(`${API.roleList}/${id}`);
+  },
 };
 export default Role;

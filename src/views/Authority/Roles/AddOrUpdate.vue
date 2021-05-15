@@ -92,12 +92,12 @@ export default {
   },
   created() {
     Role.getAll().then((res) => {
-      // console.log(res, this.keep);
       this.permission_groups = res.data.permission_groups;
     });
     if (this.id) {
       Role.getDetail(this.id).then((res) => {
         this.ValidateForm = res.data;
+        console.log(res);
         this.checkList = res.data.permissions; //双向绑定,从res（网页）中得到的数据返回到this.xxx中
       });
     }
@@ -108,36 +108,38 @@ export default {
         if (valid) {
           if (this.checkList.length === 0) {
             this.$message.error("功能权限不能为空");
-          } else if (this.$route.params.id) {
+          } else if (this.id) {
             // console.log({
             //   name: this.ValidateForm.name,
             //   display_name: this.ValidateForm.display_name,
             //   description: this.ValidateForm.description,
             //   permission_ids: this.checkList,
             // });
-            Role.postRole({
+            Role.putDetail({
               name: this.ValidateForm.name,
               display_name: this.ValidateForm.display_name,
               description: this.ValidateForm.description,
               permission_ids: this.checkList,
             });
           } else {
-            Role.putKeep({
+            Role.postRole({
               name: this.ValidateForm.name,
               display_name: this.ValidateForm.display_name,
               description: this.ValidateForm.description,
               permission_ids: this.checkList,
+            }).then((res) => {
+              this.$router.push({ name: "Roles" });
+              this.$message.success(res.msg);
             });
           }
         }
       });
-      this.$router.push({ name: "Role" });
     },
     sumbitEdit() {
       this.$refs["ValidateForm"].validate((valid) => {
         if (valid) {
           if (this.checkList.length === 0) {
-            this.$message.error("功能权限不能为空");
+            this.$message.error("功能权限不能为空"); //弹出不成功的窗口
           } else {
             Role.putDetail(this.id, {
               name: this.ValidateForm.name,
@@ -145,8 +147,8 @@ export default {
               description: this.ValidateForm.description,
               permission_ids: this.checkList,
             }).then((res) => {
-              this.$router.push({ name: "Role" });
-              this.$message.success(res.msg);
+              this.$router.push({ name: "Roles" });
+              this.$message.success(res.msg); //弹出成功的窗口
             });
           }
         }
