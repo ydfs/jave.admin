@@ -5,6 +5,10 @@ function resolve(dir) {
 }
 
 module.exports = {
+  devServer: {
+    open: true,
+    host: `test${process.env.VUE_APP_DOMAIN}`,
+  },
   chainWebpack: (config) => {
     // set svg-sprite-loader
     config.module

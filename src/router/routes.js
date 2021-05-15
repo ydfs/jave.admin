@@ -1,9 +1,8 @@
 import routesHome from "./routesHome";
-import routesTwo from "./routesTwo";
-import routesThree from "./routesThree";
+import routesDrama from "./routesDrama";
+import routesAuthority from "./routesAuthority";
 import TheLayout from "@/components/TheLayout.vue";
 import routesUser from "./routesUser";
-import routesMember from "./routesMember";
 
 export default [
   {
@@ -14,10 +13,9 @@ export default [
     },
     children: [
       ...routesHome,
-      ...routesTwo,
+      ...routesDrama,
       ...routesUser,
-      ...routesMember,
-      ...routesThree,
+      ...routesAuthority,
     ],
   },
 ];

@@ -1,10 +1,9 @@
-import TwoOne from "@/views/TwoOne";
-// import ThreeTwoOne from "@/views/ThreeTwoOne";
+import dramaSort from "@/views/Drama/dramaSort.vue";
+import dramaList from "@/views/Drama/dramaList.vue";
 
 export default [
   {
-    path: "two",
-    name: "Two",
+    path: "script",
     component: { render: (h) => h("router-view") },
     meta: {
       nav: {
@@ -20,24 +19,20 @@ export default [
     },
     children: [
       {
-        path: "sort",
-        name: "TwoOne",
-        redirect: { name: "TwoOneSelf" },
+        path: "",
         component: { render: (h) => h("router-view") },
-        meta: {
-          breadcrumb: {
-            title: "剧本分类",
-            replace: true,
-          },
-        },
         children: [
           {
-            path: "",
-            name: "TwoOneSelf",
-            component: TwoOne,
+            path: "sort",
+            name: "Self",
+            component: dramaSort,
             // permission: "",
             meta: {
-              title: "剧本管理-剧本分类",
+              title: "剧本分类",
+              breadcrumb: {
+                title: "剧本分类",
+                replace: true,
+              },
               nav: {
                 title: "剧本分类",
               },
@@ -46,23 +41,18 @@ export default [
         ],
       },
       {
-        path: "list",
-        name: "TwoOne",
-        redirect: { name: "TwoOneSelf" },
+        path: "",
         component: { render: (h) => h("router-view") },
-        meta: {
-          breadcrumb: {
-            title: "剧本列表",
-            replace: false,
-          },
-        },
         children: [
           {
-            path: "",
-            name: "TwoOneSelf",
-            component: TwoOne,
+            path: "list",
+            name: "List",
+            component: dramaList,
             meta: {
-              title: "剧本管理-剧本列表",
+              breadcrumb: {
+                title: "剧本列表",
+                replace: false,
+              },
               nav: {
                 title: "剧本列表",
               },

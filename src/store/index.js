@@ -21,7 +21,11 @@ const store = new Vuex.Store({
       state.authPermissions = authPermissions;
     },
   },
-  mutations: {},
+  mutations: {
+    AUTH(state, authPermissions) {
+      state.authPermissions = authPermissions;
+    },
+  },
   actions: {
     logout() {
       return;

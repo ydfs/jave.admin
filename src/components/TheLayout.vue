@@ -34,13 +34,13 @@
                     v-if="route.meta.nav.icon"
                     :class="route.meta.nav.icon"
                   ></i>
-                  <span slot="title">{{ route.meta.nav.title }}</span>
+                  <span slot="title">{{ route.meta.nav.title }} </span>
                 </el-menu-item>
                 <el-submenu
                   class="el-submenu-level_1"
                   v-else
                   :key="route.name"
-                  :index="route.name"
+                  :index="route.meta.nav.title"
                 >
                   <template slot="title">
                     <i
@@ -125,7 +125,7 @@
 <script>
 import { mapState } from "vuex";
 import routesAll from "@/router/routes";
-
+import Authority from "../global/service/authority";
 export default {
   data() {
     return {
@@ -144,9 +144,15 @@ export default {
     },
   },
   created() {
+    this.getmy();
     this.getRoutes();
   },
   methods: {
+    getmy() {
+      Authority.getMy().then((res) => {
+        this.$store.commit("AUTH", res.data.permissions);
+      });
+    },
     getRoutes() {
       let resultRoutes = this.filterPermissionRoutes(
         routesAll,
