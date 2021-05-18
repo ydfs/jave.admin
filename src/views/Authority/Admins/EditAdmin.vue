@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import Role from "@/global/service/role.js";
+import Role from "@/global/service/roleAdmin.js";
 export default {
   props: {
     row: {

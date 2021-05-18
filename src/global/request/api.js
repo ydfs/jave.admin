@@ -6,4 +6,5 @@ export default {
   allPermissions: `${API_PREFIX}/api/admin/permissions`,
   manager: `${API_PREFIX}/api/admin/administrators`,
   phone: `${API_PREFIX}/api/admin/users?phone=`,
+  users: `${API_PREFIX}/api/admin/users`,
 };
