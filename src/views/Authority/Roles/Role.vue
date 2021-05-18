@@ -49,7 +49,6 @@ export default {
       Role.deleteDetail(row.id).then((res) => {
         this.$message.success(res.msg);
         this.getList();
-        console.log(res);
       });
     },
     addRole() {

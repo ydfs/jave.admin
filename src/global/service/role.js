@@ -30,5 +30,29 @@ const Role = {
   deleteDetail: (id) => {
     return request.delete(`${API.roleList}/${id}`);
   },
+  managerlist: () => {
+    return request.get(API.manager);
+  },
+  managerDetail: (id) => {
+    return request.get(`${API.manager}/${id}`);
+  },
+  managerPost: ({ user_id, role_ids }) => {
+    return request.post(API.manager, {
+      user_id,
+      role_ids,
+    });
+  },
+  mobilePhone: (phone) => {
+    return request.get(API.phone + phone);
+  },
+  managerPut: (id, { user_id, role_ids }) => {
+    return request.put(`${API.manager}/${id}`, {
+      user_id,
+      role_ids,
+    });
+  },
+  managerDelete: (id) => {
+    return request.delete(`${API.manager}/${id}`);
+  },
 };
 export default Role;

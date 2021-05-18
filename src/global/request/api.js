@@ -3,7 +3,7 @@ export default {
   my: `${API_PREFIX}/api/admin/permissions/my`,
   roleList: `${API_PREFIX}/api/admin/roles`,
   //editRole:(id) => `${API_PREFIX}/api/admin/roles/${id}`,
-  // deleteRole: `${API_PREFIX}api/admin/roles/{id}`,
-  // addRole: `${API_PREFIX}/api/admin/roles`,
   allPermissions: `${API_PREFIX}/api/admin/permissions`,
+  manager: `${API_PREFIX}/api/admin/administrators`,
+  phone: `${API_PREFIX}/api/admin/users?phone=`,
 };
