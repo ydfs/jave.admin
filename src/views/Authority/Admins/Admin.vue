@@ -76,7 +76,7 @@
           <img :src="scope.row.user.avatar_url" />
         </template>
       </el-table-column>
-      <el-table-column prop="nickname" label="昵称"> </el-table-column>
+      <el-table-column prop="user.nickname" label="昵称"> </el-table-column>
       <el-table-column prop="user.phone" label="手机号"> </el-table-column>
       <el-table-column
         prop="display_name"
@@ -177,11 +177,11 @@ export default {
       this.dialogVisible = false;
       this.managerlist();
     },
-    handleSumbit(row) {
-      Role.managerPut(row.id).then((res) => {
-        console.log(res);
-      });
-    },
+    // handleSumbit(row) {
+    //   Role.managerPut(row.id).then((res) => {
+    //     console.log(res);
+    //   });
+    // },
     handleDelete(row) {
       Role.managerDelete(row.id).then((res) => {
         this.$message.success(res.msg);

@@ -4,7 +4,7 @@
     <div class="page-top">
       <div class="block">
         <el-date-picker
-          v-model="value1"
+          v-model="value"
           type="daterange"
           range-separator="至"
           start-placeholder="开始日期"
@@ -12,43 +12,49 @@
         >
         </el-date-picker>
       </div>
-      <el-select
-        v-model="value"
-        filterable
-        remote
-        reserve-keyword
-        icon="el-icon-search"
-        placeholder="昵称/真实姓名"
-        :remote-method="remoteMethod"
-        :loading="loading"
+      <el-input
+        placeholder="昵称"
+        prefix-icon="el-icon-search"
+        maxlength="14"
+        v-model="inputName"
       >
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        >
-        </el-option>
-      </el-select>
+      </el-input>
+      <el-input
+        placeholder="手机号"
+        prefix-icon="el-icon-search"
+        maxlength="14"
+        v-model="inputphone"
+      >
+      </el-input>
       <el-row>
-        <el-button type="success" plain>查询</el-button>
-        <el-button type="danger" plain>重置</el-button>
+        <el-button type="success" plain @click="query">查询</el-button>
+        <el-button type="danger" plain @click="reset">重置</el-button>
       </el-row>
     </div>
+    <el-button style="margin-top: 25px" plain @click="add"
+      >添加新用户</el-button
+    >
+
     <el-table :data="tableData" border stripe style="width: 100%">
       <el-table-column prop="id" label="ID" width="80"> </el-table-column>
       <el-table-column prop="nickname" label="昵称"> </el-table-column>
-      <el-table-column prop="name" label="真实姓名"> </el-table-column>
-      <el-table-column prop="gender" label="性别" width="60"> </el-table-column>
+      <el-table-column prop="introduction" label="介绍"> </el-table-column>
+      <el-table-column prop="gender" v-slot="scope" label="性别" width="60">
+        <span v-if="scope.row.gender == 0">未知</span>
+        <span v-else-if="scope.row.gender == 1">男</span>
+        <span v-else>女</span>
+      </el-table-column>
       <el-table-column prop="phone" label="手机号"> </el-table-column>
-      <el-table-column prop="date" label="创建时间"> </el-table-column>
+      <el-table-column prop="created_at" label="创建时间" v-slot="scope">
+        {{ new Date(scope.row.created_at).toLocaleString() }}
+      </el-table-column>
       <el-table-column prop="address" label="操作" width="60">
-        <template>
+        <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
             style="color: #67696d"
-            @click="handleDetails"
+            @click="handleDetails(scope.row)"
             >详情</el-button
           >
         </template>
@@ -56,13 +62,11 @@
     </el-table>
     <div class="block">
       <el-pagination
-        @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
-        :page-size="5"
         background
         layout="total, prev, pager, next, jumper"
-        :total="1000"
+        :total="pagination.total"
       >
       </el-pagination>
     </div>
@@ -74,50 +78,49 @@ import Users from "@/global/service/users.js";
 export default {
   data() {
     return {
-      value1: "",
+      value: "",
       tableData: [],
+      inputphone: "",
+      inputName: "",
       currentPage: 1,
-      options: [],
-      value: [],
-      list: [],
+      pagination: "",
       loading: false,
-      states: [],
     };
   },
   created() {
-    Users.usersGet().then((res) => {
-      this.tableData = res.data.list.reverse();
-      console.log(res);
-    });
-  },
-  mounted() {
-    this.list = this.states.map((item) => {
-      return { value: `value:${item}`, label: `label:${item}` };
-    });
+    this.usersGet();
   },
   methods: {
-    remoteMethod(query) {
-      if (query !== "") {
-        this.loading = true;
-        setTimeout(() => {
-          this.loading = false;
-          this.options = this.list.filter((item) => {
-            return item.label.toLowerCase().indexOf(query.toLowerCase()) > -1;
-          });
-        }, 200);
-      } else {
-        this.options = [];
-      }
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+    usersGet() {
+      Users.usersGet({
+        page: this.currentPage,
+        phone: this.inputphone,
+        nickname: this.inputName,
+      }).then((res) => {
+        this.tableData = res.data.list;
+        this.pagination = res.data.pagination;
+        console.log(res);
+      });
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+      this.usersGet();
     },
-    handleDetails() {
-      // this.$router.push({ name: "details", params: { id: String(row.id) } });
-      this.$router.push({ name: "details" });
+    handleDetails(row) {
+      this.$router.push({ name: "details", params: { id: String(row.id) } });
+    },
+    query() {
+      this.usersGet();
+    },
+    reset() {
+      this.value = null;
+      this.inputphone = null;
+      this.inputName = null;
+      this.usersGet();
+    },
+    add() {
+      this.$router.push({ name: "newlyadd" });
+      // this.$emit(disabled);
     },
   },
 };
@@ -127,5 +130,11 @@ export default {
 .page-top {
   display: flex;
   grid-column-gap: 10px;
+  .el-input {
+    width: 180px;
+  }
+}
+.el-input {
+  width: 180px;
 }
 </style>

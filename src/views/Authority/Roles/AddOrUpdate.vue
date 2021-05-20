@@ -109,12 +109,6 @@ export default {
           if (this.checkList.length === 0) {
             this.$message.error("功能权限不能为空");
           } else if (this.id) {
-            // console.log({
-            //   name: this.ValidateForm.name,
-            //   display_name: this.ValidateForm.display_name,
-            //   description: this.ValidateForm.description,
-            //   permission_ids: this.checkList,
-            // });
             Role.putDetail({
               name: this.ValidateForm.name,
               display_name: this.ValidateForm.display_name,

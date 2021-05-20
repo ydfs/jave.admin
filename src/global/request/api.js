@@ -7,4 +7,5 @@ export default {
   manager: `${API_PREFIX}/api/admin/administrators`,
   phone: `${API_PREFIX}/api/admin/users?phone=`,
   users: `${API_PREFIX}/api/admin/users`,
+  vip: `${API_PREFIX}/api/admin/vip/history`,
 };

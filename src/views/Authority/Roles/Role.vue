@@ -39,7 +39,6 @@ export default {
     getList() {
       Role.getList().then((res) => {
         this.tableData = res.data.reverse();
-        // console.log(res);
       });
     },
     handleEdit(row) {
