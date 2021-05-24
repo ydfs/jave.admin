@@ -35,8 +35,8 @@ const Users = {
       introduction,
     });
   },
-  vipGet: ({ page, nickname }) => {
-    return request.get(API.vip, { page, nickname });
+  vipGet: ({ page, name }) => {
+    return request.get(API.vip, { page, name });
   },
   vipType: () => {
     return request.get(API.viptype);

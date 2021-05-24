@@ -152,7 +152,7 @@ export default {
   },
   methods: {
     vipGet() {
-      Users.vipGet({ page: this.currentPage, nickname: this.inputName }).then(
+      Users.vipGet({ page: this.currentPage, name: this.inputName }).then(
         (res) => {
           this.tableData = res.data.list;
           this.pagination = res.data.pagination;
@@ -169,11 +169,11 @@ export default {
       this.vipGet();
     },
     query() {
-      console.log(123);
       this.vipGet();
     },
     reset() {
       this.inputName = null;
+      this.vipGet();
     },
     memberAdd() {
       Users.vipRecharge({
@@ -190,7 +190,6 @@ export default {
     },
 
     loadAll() {
-      //获取之前全部用户的信息
       Users.usersGet({}).then((res) => {
         let total = res.data.pagination.total;
         Users.usersGet({ page_size: total }).then((res) => {

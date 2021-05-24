@@ -2,24 +2,26 @@
   <div class="page-content-container">
     <bread-crumb></bread-crumb>
     <div class="page-top">
-      <el-input
-        class="dramaSearch"
-        v-model="inputDrama"
-        placeholder="剧本搜索"
-      ></el-input>
-      <el-button type="success" plain @click="query">查询</el-button>
-      <el-button class="reset" type="danger" plain @click="reset"
-        >重置</el-button
-      >
+      <el-select v-model="value" placeholder="剧本分类">
+        <el-option
+          v-for="item in dramaOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
     </div>
     <el-table :data="tableData" border stripe style="width: 100%">
       <el-table-column prop="date" label="序号" width="60"> </el-table-column>
+      <el-table-column prop="nickname" label="类型" width="60">
+      </el-table-column>
       <el-table-column prop="name" label="剧本名" width="260">
       </el-table-column>
       <el-table-column prop="address" label="简介"> </el-table-column>
-      <el-table-column prop="date" label="可参与人数" width="90">
+      <el-table-column prop="number" label="可参与人数" width="90">
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="100">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleEdit(scope.row)"
             >详情</el-button
@@ -35,21 +37,43 @@
 </template>
 
 <script>
-// import Drama from "@/global/service/drama.js";
+import Drama from "@/global/service/drama.js";
 export default {
   data() {
     return {
+      dramaOptions: [
+        {
+          value: "选项1",
+          label: "黄金糕",
+        },
+        {
+          value: "选项2",
+          label: "双皮奶",
+        },
+      ],
+      value: "",
       tableData: [{}],
-      inputDrama: "",
     };
   },
+  created() {
+    this.dramaGet();
+    // this.dramaPost();
+  },
   methods: {
+    dramaGet() {
+      Drama.dramaGet().then((res) => {
+        console.log(res);
+      });
+    },
+    // dramaPost() {
+    //   Drama.dramaPost().then((res) => {
+    //     console.log(res);
+    //   });
+    // },
     handleEdit(index, row) {
       console.log(index, row);
     },
     handleDelete() {},
-    query() {},
-    reset() {},
   },
 };
 </script>
