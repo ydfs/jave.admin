@@ -28,13 +28,13 @@ export default [
             component: dramaSort,
             // permission: "",
             meta: {
-              title: "剧本分类",
+              // title: "剧本分类",
               breadcrumb: {
-                title: "剧本分类",
+                title: "剧本创建",
                 replace: true,
               },
               nav: {
-                title: "剧本分类",
+                title: "剧本创建",
               },
             },
           },

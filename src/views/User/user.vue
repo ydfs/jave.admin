@@ -13,6 +13,7 @@
         </el-date-picker>
       </div>
       <el-input
+        class="inputNP"
         placeholder="昵称"
         prefix-icon="el-icon-search"
         maxlength="14"
@@ -20,10 +21,11 @@
       >
       </el-input>
       <el-input
+        class="inputNP"
         placeholder="手机号"
         prefix-icon="el-icon-search"
         maxlength="14"
-        v-model="inputphone"
+        v-model="inputPhone"
       >
       </el-input>
       <el-row>
@@ -31,10 +33,9 @@
         <el-button type="danger" plain @click="reset">重置</el-button>
       </el-row>
     </div>
-    <el-button style="margin-top: 25px" plain @click="add"
+    <el-button style="margin-top: 25px" type="success" @click="add"
       >添加新用户</el-button
     >
-
     <el-table :data="tableData" border stripe style="width: 100%">
       <el-table-column prop="id" label="ID" width="80"> </el-table-column>
       <el-table-column prop="nickname" label="昵称"> </el-table-column>
@@ -80,7 +81,7 @@ export default {
     return {
       value: "",
       tableData: [],
-      inputphone: "",
+      inputPhone: "",
       inputName: "",
       currentPage: 1,
       pagination: "",
@@ -94,12 +95,11 @@ export default {
     usersGet() {
       Users.usersGet({
         page: this.currentPage,
-        phone: this.inputphone,
+        phone: this.inputPhone,
         nickname: this.inputName,
       }).then((res) => {
         this.tableData = res.data.list;
         this.pagination = res.data.pagination;
-        console.log(res);
       });
     },
     handleCurrentChange(val) {
@@ -114,13 +114,12 @@ export default {
     },
     reset() {
       this.value = null;
-      this.inputphone = null;
+      this.inputPhone = null;
       this.inputName = null;
       this.usersGet();
     },
     add() {
       this.$router.push({ name: "newlyadd" });
-      // this.$emit(disabled);
     },
   },
 };
@@ -130,11 +129,13 @@ export default {
 .page-top {
   display: flex;
   grid-column-gap: 10px;
-  .el-input {
+  .inputNP {
     width: 180px;
   }
-}
-.el-input {
-  width: 180px;
+  .el-button--danger.is-plain {
+    color: #606266;
+    background: #ffffff;
+    border-color: #dcdfe6;
+  }
 }
 </style>

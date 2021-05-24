@@ -5,7 +5,7 @@ import Member from "@/views/memberVIP.vue";
 export default [
   {
     path: "",
-    name: "User",
+    // name: "User",
     component: { render: (h) => h("router-view") },
     meta: {
       nav: {
@@ -53,7 +53,7 @@ export default [
           {
             path: "user/newlyadd",
             name: "newlyadd",
-            props: true, //路由要传一个id过去
+            props: true,
             component: userDetails,
             meta: {
               breadcrumb: {
@@ -68,7 +68,7 @@ export default [
   },
   {
     path: "",
-    name: "Member",
+    // name: "Member",
     component: Member,
     meta: {
       nav: {
@@ -82,7 +82,7 @@ export default [
     children: [
       {
         path: "",
-        name: "Member",
+        // name: "Member",
         component: { render: (h) => h("router-view") },
         meta: {
           breadcrumb: {

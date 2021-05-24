@@ -62,7 +62,7 @@
             >
           </el-form-item>
           <el-form-item label="手机号：" prop="phone">
-            <spanv v-if="this.id">{{ UserDetails.phone }}</spanv>
+            <span v-if="this.id">{{ UserDetails.phone }}</span>
             <span v-else
               ><el-input
                 placeholder="请输入手机号"
@@ -107,7 +107,6 @@ export default {
       Users.usersIdGet(this.id).then((res) => {
         this.UserDetails = res.data;
         this.UserDetails.gender = String(this.UserDetails.gender);
-        console.log(res);
       });
     },
     handleEdit() {

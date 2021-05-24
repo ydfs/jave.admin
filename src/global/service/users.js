@@ -2,13 +2,18 @@ import request from "../request/axios";
 import API from "../request/api.js";
 
 const Users = {
-  usersGet: ({ page, phone, nickname, gender }) => {
-    return request.get(API.users, {
-      page,
-      phone,
-      nickname,
-      gender,
-    });
+  usersGet: ({ page, page_size, phone, nickname, gender }) => {
+    if (page || page_size || phone || nickname || gender) {
+      return request.get(API.users, {
+        page,
+        page_size,
+        phone,
+        nickname,
+        gender,
+      });
+    } else {
+      return request.get(API.users);
+    }
   },
   usersIdGet: (id) => {
     return request.get(`${API.users}/${id}`);
@@ -30,8 +35,22 @@ const Users = {
       introduction,
     });
   },
-  vipGet: () => {
-    return request.get(API.vip);
+  vipGet: ({ page, nickname }) => {
+    return request.get(API.vip, { page, nickname });
+  },
+  vipType: () => {
+    return request.get(API.viptype);
+  },
+  vipRecharge: ({ user_id, vip_sku_id, number, remark }) => {
+    return request.post(API.viprecharge, {
+      user_id,
+      vip_sku_id,
+      number,
+      remark,
+    });
+  },
+  mobilePhone: (phone) => {
+    return request.get(API.phone + phone);
   },
 };
 export default Users;

@@ -90,11 +90,7 @@
             >编辑</el-button
           >
           <span class="separator"></span>
-          <el-button
-            size="mini"
-            style="color: red"
-            type="text"
-            @click="handleDelete(scope.row)"
+          <el-button size="mini" type="text" @click="handleDelete(scope.row)"
             >删除</el-button
           >
           <edit-admin
