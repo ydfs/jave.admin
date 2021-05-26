@@ -4,7 +4,9 @@
     <button class="add" @click="addRole">添加角色</button>
     <el-table :data="tableData" border stripe style="width: 100%">
       <el-table-column label="序号">
-        <template slot-scope="scope">{{ scope.$index + 1 }}</template>
+        <template slot-scope="scope">{{
+          (currentPage - 1) * page_size + (scope.$index + 1)
+        }}</template>
       </el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="display_name" label="展示名称"> </el-table-column>
@@ -30,6 +32,8 @@ export default {
   data() {
     return {
       tableData: [],
+      page_size: 10,
+      currentPage: 1,
     };
   },
   created() {

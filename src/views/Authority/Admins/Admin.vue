@@ -69,7 +69,9 @@
       style="width: 100%"
     >
       <el-table-column width="60" label="序号">
-        <template v-slot="scope">{{ scope.$index + 1 }}</template>
+        <template v-slot="scope">{{
+          (currentPage - 1) * page_size + (scope.$index + 1)
+        }}</template>
       </el-table-column>
       <el-table-column prop="user" width="60" label="头像">
         <template v-slot="scope">
@@ -90,7 +92,11 @@
             >编辑</el-button
           >
           <span class="separator"></span>
-          <el-button size="mini" type="text" @click="handleDelete(scope.row)"
+          <el-button
+            size="mini"
+            style="color: red"
+            type="text"
+            @click="handleDelete(scope.row)"
             >删除</el-button
           >
           <edit-admin
@@ -125,6 +131,8 @@ export default {
       formLabelWidth: "120px",
       value: "",
       row: {},
+      page_size: 10,
+      currentPage: 1,
     };
   },
   created() {
@@ -147,7 +155,6 @@ export default {
     managerlist() {
       Role.managerlist().then((res) => {
         this.tableData = res.data.list.reverse();
-        console.log(res.data.list);
       });
     },
     addAdmin() {
@@ -167,7 +174,6 @@ export default {
       this.dialogVisible = true;
       this.row = row;
       this.row.rolesIdList = this.row.roles.map((item) => item.id);
-      console.log(this.row, row);
     },
     handleClose() {
       this.dialogVisible = false;

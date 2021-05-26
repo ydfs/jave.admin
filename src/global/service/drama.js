@@ -5,17 +5,17 @@ const Drama = {
   dramaPost: (params) => {
     return request.post(API.drama, params);
   },
-  dramaGet: () => {
-    return request.get(API.drama);
+  dramaGet: ({ page }) => {
+    return request.get(API.drama, { page });
   },
   dramaDetails: (id) => {
     return request.get(`${API.drama}/${id}`);
   },
-  dramaEdit: (id) => {
-    return request.put(`${API.drama}/${id}`);
+  dramaEdit: (id, params) => {
+    return request.put(`${API.drama}/${id}`, params);
   },
   dramaDelete: (id) => {
-    return request.get.apply(`${API.drama}/${id}`);
+    return request.delete(`${API.drama}/${id}`);
   },
 };
 export default Drama;

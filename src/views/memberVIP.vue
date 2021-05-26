@@ -90,7 +90,11 @@
     </div>
     <el-table :data="tableData" border stripe style="width: 100%">
       <el-table-column prop="id" label="ID" width="60"> </el-table-column>
-      <el-table-column prop="date" label="头像" width="60"> </el-table-column>
+      <el-table-column prop="date" label="头像" width="60">
+        <template v-slot="scope">
+          <img :src="scope.row.user.avatar_url" />
+        </template>
+      </el-table-column>
       <el-table-column prop="nickname" label="昵称" v-slot="scoped">{{
         scoped.row.user.nickname
       }}</el-table-column>

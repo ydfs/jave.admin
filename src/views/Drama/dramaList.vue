@@ -13,13 +13,17 @@
       </el-select>
     </div>
     <el-table :data="tableData" border stripe style="width: 100%">
-      <el-table-column prop="date" label="序号" width="60"> </el-table-column>
+      <el-table-column label="序号" width="60">
+        <template v-slot="scope">{{
+          (currentPage - 1) * page_size + (scope.$index + 1)
+        }}</template>
+      </el-table-column>
       <el-table-column prop="nickname" label="类型" width="60">
       </el-table-column>
       <el-table-column prop="name" label="剧本名" width="260">
       </el-table-column>
-      <el-table-column prop="address" label="简介"> </el-table-column>
-      <el-table-column prop="number" label="可参与人数" width="90">
+      <el-table-column prop="content" label="简介"> </el-table-column>
+      <el-table-column prop="peoples" label="可参与人数" width="90">
       </el-table-column>
       <el-table-column label="操作" width="100">
         <template slot-scope="scope">
@@ -33,6 +37,15 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="block">
+      <el-pagination
+        @current-change="handleCurrentChange"
+        background
+        layout="total, prev, pager, next, jumper"
+        :total="pagination.total"
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -52,28 +65,40 @@ export default {
         },
       ],
       value: "",
-      tableData: [{}],
+      tableData: [],
+      currentPage: 1,
+      page_size: 10,
+      pagination: "",
     };
   },
+
   created() {
     this.dramaGet();
-    // this.dramaPost();
   },
   methods: {
     dramaGet() {
-      Drama.dramaGet().then((res) => {
+      Drama.dramaGet({ page: this.currentPage }).then((res) => {
+        this.tableData = res.data.list;
+        this.pagination = res.data.pagination;
         console.log(res);
       });
     },
-    // dramaPost() {
-    //   Drama.dramaPost().then((res) => {
-    //     console.log(res);
-    //   });
-    // },
-    handleEdit(index, row) {
-      console.log(index, row);
+    handleEdit(row) {
+      this.$router.push({
+        name: "dramaDetails",
+        params: { id: String(row.id) },
+      });
     },
-    handleDelete() {},
+    handleDelete(row) {
+      Drama.dramaDelete(row.id).then((res) => {
+        this.$message.success(res.msg);
+        this.dramaGet();
+      });
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.dramaGet();
+    },
   },
 };
 </script>
