@@ -1,14 +1,14 @@
 <template>
   <div class="page-content-container">
-    <!-- <div :disabled="true" v-if="this.id"> -->
+    <!-- <div  :disabled="true" v-if="this.id"> -->
     <bread-crumb></bread-crumb>
     <div class="drama-type">
-      <el-select v-model="value" placeholder="剧本类型">
+      <el-select v-model="classify" placeholder="剧本类型">
         <el-option
-          v-for="item in options"
-          :key="item.value"
+          v-for="item in dramaOptions"
+          :key="item.classify"
           :label="item.label"
-          :value="item.value"
+          :value="item.classify"
         >
         </el-option>
       </el-select>
@@ -52,14 +52,29 @@
             prop="content"
             :rules="[{ required: true, message: '剧本内容不能为空' }]"
           >
-            <el-input
+            <quill-editor
+              v-model="dramaContent.content"
+              ref="myQuillEditor"
+              :options="editorOption"
+              @focus="onEditorFocus($event)"
+              @blur="onEditorBlur($event)"
+              @change="onEditorChange($event)"
+              class="editor"
+            ></quill-editor>
+            <!-- <quill-editor
+              v-model="dramaContent.content"
+              ref="myQuillEditor"
+              :options="editorOption"
+            >
+            </quill-editor> -->
+            <!-- <el-input
               class="input"
               type="textarea"
               :rows="6"
               placeholder="请输入剧本的内容"
               v-model="dramaContent.content"
             >
-            </el-input>
+            </el-input> -->
           </el-form-item>
         </el-form>
       </div>
@@ -67,13 +82,18 @@
         上传封面图:
         <el-upload
           class="avatar-uploader"
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action=""
           :show-file-list="false"
-          :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
+          :http-request="AvatarUpload"
         >
-          <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+          <img
+            v-if="dramaContent.cover_url"
+            :src="dramaContent.cover_url"
+            class="avatar"
+          />
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          <div v-show="loading" class="el-loading-mask"></div>
         </el-upload>
       </div>
     </div>
@@ -121,12 +141,12 @@
         <el-radio v-model="dramaContent.status" label="1">下线</el-radio>
       </el-form>
     </div>
-    <div class="role-box" :model="dramaContent">
+    <div class="role-box">
       <p>角色介绍</p>
       <div class="roles">
         <div class="role">
           <img />
-          <p class="role-name">名字</p>
+          <p class="role-name">{{ dramaContent.roles }}</p>
           <p class="role-content">介绍</p>
         </div>
       </div>
@@ -149,23 +169,32 @@
 
 <script>
 import Drama from "@/global/service/drama.js";
+import qiniuService from "@/global/service/qiniu.js";
+
+import { quillEditor } from "vue-quill-editor";
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
 export default {
+  components: {
+    quillEditor,
+  },
+  computed: {
+    //当前富文本实例
+    editor() {
+      return this.$refs.myQuillEditor.quill;
+    },
+  },
   data() {
     return {
-      options: [
-        {
-          value: "选项1",
-          label: "黄金糕",
-        },
-        {
-          value: "选项2",
-          label: "双皮奶",
-        },
-      ],
-      value: "",
+      dramaOptions: [],
+      classify: "", //分类
       dramaContent: {},
       imageUrl: "",
+      loading: false,
       status: "",
+      url: "",
+      editorOption: {},
     };
   },
   props: {
@@ -179,6 +208,14 @@ export default {
     }
   },
   methods: {
+    // 准备富文本编辑器
+    onEditorReady() {},
+    // 富文本编辑器 失去焦点事件
+    onEditorBlur() {},
+    // 富文本编辑器 获得焦点事件
+    onEditorFocus() {},
+    // 富文本编辑器 内容改变事件
+    onEditorChange() {},
     dramaDetails() {
       Drama.dramaDetails(this.id).then((res) => {
         this.dramaContent = res.data;
@@ -186,21 +223,40 @@ export default {
         console.log(res);
       });
     },
-    handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
+    AvatarUpload(files) {
+      const file = files.file;
+      this.loading = true;
+      qiniuService
+        .start({ file }, () => {})
+        .then((res) => {
+          this.url = res.key;
+          this.dramaContent.cover_url = res.imageUrl;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
-
-      if (!isJPG) {
-        this.$message.error("上传头像图片只能是 JPG 格式!");
+      if (!file || !this.validateSize(file)) {
+        file.srcElement.value = "";
+        return;
       }
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
-      }
-      return isJPG && isLt2M;
     },
+    // 验证大小
+    validateSize(file) {
+      const size = this.uploadLimit * 1024 * 1024;
+      const fileName = file.name;
+      const suffix = fileName.split(".").pop();
+      const imageRegex = /(png|jpg|jpeg)/;
+      if (file.size > size || !imageRegex.test(suffix)) {
+        this.$message.error(
+          `请上传不大于 ${this.uploadLimit}MB 且格式为png、jpg、jpeg的图片`
+        );
+        return false;
+      }
+      return true;
+    },
+
     sumbitEdit() {
       this.$refs["dramaContent"].validate((valid) => {
         if (valid) {
@@ -211,8 +267,11 @@ export default {
             dm: this.dramaContent.dm,
             replay: this.dramaContent.replay,
             status: this.dramaContent.status,
+            roles: this.dramaContent.roles,
+            cover_url: this.dramaContent.cover_url,
           }).then((res) => {
             this.$message.success(res.msg);
+            // this.dramaContent =null;
           });
         }
       });
@@ -227,6 +286,7 @@ export default {
             dm: this.dramaContent.dm,
             replay: this.dramaContent.replay,
             status: this.dramaContent.status,
+            cover_url: this.dramaContent.cover_url,
           }).then((res) => {
             this.$message.success(res.msg);
             this.$router.push({ name: "List" });
@@ -250,7 +310,7 @@ export default {
     display: flex;
     justify-content: space-between;
     background-color: white;
-    padding: 20px 20px 20px 0;
+    padding: 20px 30px 20px 0;
     border-bottom: 8px solid #f0f2f5;
     .drama-content {
     }
@@ -274,8 +334,8 @@ export default {
     text-align: center;
   }
   .avatar {
-    width: 178px;
-    height: 178px;
+    // width: 178px;
+    height: 200px;
     display: block;
   }
   .host-box {

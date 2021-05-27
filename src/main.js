@@ -9,6 +9,12 @@ import "../theme/index.css";
 import IconSvg from "./plugins/icons";
 import BreadCrumb from "./components/BreadCrumb.vue";
 
+import VueQuillEditor from "vue-quill-editor";
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
+Vue.use(VueQuillEditor);
+
 Vue.use(ElementUI);
 Vue.use(IconSvg);
 

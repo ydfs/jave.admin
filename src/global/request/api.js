@@ -11,4 +11,6 @@ export default {
   viptype: `${API_PREFIX}/api/admin/vip/skus`,
   viprecharge: `${API_PREFIX}/api/admin/vip/user`,
   drama: `${API_PREFIX}/api/admin/books`,
+  qiniuToken: `${API_PREFIX}/api/file/qiniu-token`,
+  qiniuStore: `${API_PREFIX}/api/file/qiniu-store`,
 };

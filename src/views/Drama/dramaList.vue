@@ -2,12 +2,12 @@
   <div class="page-content-container">
     <bread-crumb></bread-crumb>
     <div class="page-top">
-      <el-select v-model="value" placeholder="剧本分类">
+      <el-select v-model="classify" placeholder="剧本分类">
         <el-option
           v-for="item in dramaOptions"
-          :key="item.value"
+          :key="item.classify"
           :label="item.label"
-          :value="item.value"
+          :value="item.classify"
         >
         </el-option>
       </el-select>
@@ -54,17 +54,8 @@ import Drama from "@/global/service/drama.js";
 export default {
   data() {
     return {
-      dramaOptions: [
-        {
-          value: "选项1",
-          label: "黄金糕",
-        },
-        {
-          value: "选项2",
-          label: "双皮奶",
-        },
-      ],
-      value: "",
+      dramaOptions: [],
+      classify: "",
       tableData: [],
       currentPage: 1,
       page_size: 10,
