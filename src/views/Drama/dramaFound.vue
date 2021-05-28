@@ -3,12 +3,39 @@
     <!-- <div  :disabled="true" v-if="this.id"> -->
     <bread-crumb></bread-crumb>
     <div class="drama-type">
-      <el-select v-model="classify" placeholder="剧本类型">
-        <el-option
-          v-for="item in dramaOptions"
-          :key="item.classify"
+      <!-- <el-form :model="classify" ref="addAdmin">
+        <el-form-item
+          label="剧本类型"
+          prop="dramaListId"
+          :rules="[
+            { required: true, message: '选择不能为空', trigger: 'blur' },
+          ]"
+        >
+          <el-select
+            v-model="form.dramaListId"
+            multiple
+            placeholder="请选择角色"
+          >
+            <el-option
+              v-for="item in dramaOptions"
+              :key="item.classify"
           :label="item.label"
           :value="item.classify"
+              ></el-option
+            >
+          </el-select>
+        </el-form-item>
+      </el-form> -->
+      <el-select
+        v-model="classify"
+        @change="handleChange"
+        placeholder="剧本类型"
+      >
+        <el-option
+          v-for="item in dramaOptions"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
         >
         </el-option>
       </el-select>
@@ -53,6 +80,7 @@
             :rules="[{ required: true, message: '剧本内容不能为空' }]"
           >
             <quill-editor
+              style="width: 77%"
               v-model="dramaContent.content"
               ref="myQuillEditor"
               :options="editorOption"
@@ -109,28 +137,46 @@
           prop="dm"
           :rules="[{ required: true, message: '主持人内容不能为空' }]"
         >
-          <el-input
+          <quill-editor
+            v-model="dramaContent.dm"
+            ref="myQuillEditor"
+            :options="editorOption"
+            @focus="onEditorFocus($event)"
+            @blur="onEditorBlur($event)"
+            @change="onEditorChange($event)"
+            class="editor"
+          ></quill-editor>
+          <!-- <el-input
             class="host-box"
             type="textarea"
             :rows="6"
             placeholder="请输入主持人的内容"
             v-model="dramaContent.dm"
           >
-          </el-input>
+          </el-input> -->
         </el-form-item>
         <el-form-item
           label="复盘内容"
           prop="replay"
           :rules="[{ required: true, message: '复盘内容不能为空' }]"
         >
-          <el-input
+          <quill-editor
+            v-model="dramaContent.replay"
+            ref="myQuillEditor"
+            :options="editorOption"
+            @focus="onEditorFocus($event)"
+            @blur="onEditorBlur($event)"
+            @change="onEditorChange($event)"
+            class="editor"
+          ></quill-editor>
+          <!-- <el-input
             class="host-box"
             type="textarea"
             :rows="6"
             placeholder="请输入复盘的内容"
             v-model="dramaContent.replay"
           >
-          </el-input>
+          </el-input> -->
         </el-form-item>
         <el-radio
           style="margin-left: 30px"
@@ -172,9 +218,6 @@ import Drama from "@/global/service/drama.js";
 import qiniuService from "@/global/service/qiniu.js";
 
 import { quillEditor } from "vue-quill-editor";
-import "quill/dist/quill.core.css";
-import "quill/dist/quill.snow.css";
-import "quill/dist/quill.bubble.css";
 export default {
   components: {
     quillEditor,
@@ -205,7 +248,9 @@ export default {
   created() {
     if (this.id) {
       this.dramaDetails();
+      this.categoryGet();
     }
+    this.categoryGet();
   },
   methods: {
     // 准备富文本编辑器
@@ -222,6 +267,15 @@ export default {
         this.dramaContent.status = String(this.dramaContent.status);
         console.log(res);
       });
+    },
+    categoryGet() {
+      Drama.categoryGet().then((res) => {
+        this.dramaOptions = res.data;
+        console.log(res);
+      });
+    },
+    handleChange() {
+      console.log(this.classify);
     },
     AvatarUpload(files) {
       const file = files.file;
@@ -261,6 +315,7 @@ export default {
       this.$refs["dramaContent"].validate((valid) => {
         if (valid) {
           Drama.dramaPost({
+            // name: this.dramaOptions.name,
             name: this.dramaContent.name,
             peoples: this.dramaContent.peoples,
             content: this.dramaContent.content,
@@ -313,6 +368,9 @@ export default {
     padding: 20px 30px 20px 0;
     border-bottom: 8px solid #f0f2f5;
     .drama-content {
+      .quill-editor .editor {
+        width: 77%;
+      }
     }
   }
   .avatar-uploader .el-upload {
@@ -338,9 +396,9 @@ export default {
     height: 200px;
     display: block;
   }
-  .host-box {
-    width: 800px;
-  }
+  // .host-box {
+  //   width: 800px;
+  // }
   .role-box {
     background-color: white;
     padding: 20px 20px 20px 20px;
@@ -368,6 +426,9 @@ export default {
     .role-add {
       text-align: center;
     }
+  }
+  .quill-editor .editor {
+    width: 77%;
   }
 }
 </style>

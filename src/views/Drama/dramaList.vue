@@ -1,16 +1,21 @@
 <template>
   <div class="page-content-container">
     <bread-crumb></bread-crumb>
-    <div class="page-top">
-      <el-select v-model="classify" placeholder="剧本分类">
+    <div class="drama-top">
+      <el-select
+        v-model="classify"
+        @change="handleChange"
+        placeholder="剧本分类"
+      >
         <el-option
           v-for="item in dramaOptions"
-          :key="item.classify"
-          :label="item.label"
-          :value="item.classify"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
         >
         </el-option>
       </el-select>
+      <el-button type="success" @click="creatingDrama">创建剧本</el-button>
     </div>
     <el-table :data="tableData" border stripe style="width: 100%">
       <el-table-column label="序号" width="60">
@@ -73,6 +78,13 @@ export default {
         this.pagination = res.data.pagination;
         console.log(res);
       });
+      Drama.categoryGet().then((res) => {
+        this.dramaOptions = res.data;
+        console.log(res);
+      });
+    },
+    handleChange() {
+      console.log(this.classify);
     },
     handleEdit(row) {
       this.$router.push({
@@ -90,12 +102,17 @@ export default {
       this.currentPage = val;
       this.dramaGet();
     },
+    creatingDrama() {
+      this.$router.push({ name: "found" });
+    },
   },
 };
 </script>
 
 <style lang="less">
-.page-top {
+.drama-top {
+  display: flex;
+  justify-content: space-between;
   .dramaSearch {
     width: 200px;
   }

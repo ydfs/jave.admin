@@ -1,3 +1,4 @@
+import dramaClassify from "@/views/Drama/dramaClassify.vue";
 import dramaFound from "@/views/Drama/dramaFound.vue";
 import dramaList from "@/views/Drama/dramaList.vue";
 
@@ -23,18 +24,18 @@ export default [
         component: { render: (h) => h("router-view") },
         children: [
           {
-            path: "found",
-            name: "Found",
-            component: dramaFound,
+            path: "classify",
+            name: "Classify",
+            component: dramaClassify,
             // permission: "",
             meta: {
               // title: "剧本分类",
               breadcrumb: {
-                title: "剧本创建",
+                title: "剧本分类",
                 replace: true,
               },
               nav: {
-                title: "剧本创建",
+                title: "剧本分类",
               },
             },
           },
@@ -56,6 +57,17 @@ export default [
             meta: {
               nav: {
                 title: "剧本列表",
+              },
+            },
+          },
+          {
+            path: "list/found",
+            name: "found",
+            component: dramaFound,
+            meta: {
+              breadcrumb: {
+                title: "创建剧本",
+                replace: true,
               },
             },
           },

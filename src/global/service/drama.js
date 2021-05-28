@@ -17,5 +17,20 @@ const Drama = {
   dramaDelete: (id) => {
     return request.delete(`${API.drama}/${id}`);
   },
+  categoryPost: ({ name }) => {
+    return request.post(API.dramaClassify, { name });
+  },
+  categoryGet: () => {
+    return request.get(API.dramaClassify);
+  },
+  categoryDetail: (id) => {
+    return request.get(`${API.dramaClassify}/${id}`);
+  },
+  categoryPut: (id) => {
+    return request.put(`${API.dramaClassify}/${id}`);
+  },
+  categoryDelete: (id) => {
+    return request.delete(`${API.dramaClassify}/${id}`);
+  },
 };
 export default Drama;
