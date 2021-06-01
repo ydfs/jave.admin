@@ -51,7 +51,7 @@ export default {
   data() {
     return {
       tableData: [],
-      page_size: 10,
+      page_size: 20,
       currentPage: 1,
       dialogFormVisible: false,
       category: {
@@ -119,11 +119,22 @@ export default {
     categoryDetail() {
       Category.categoryDetail(this.id).then((res) => {
         this.category = res.data;
-        console.log(res);
       });
     },
   },
 };
 </script>
 
-<style lang="less"></style>
+<style lang="less">
+.page-content-container {
+  .el-dialog {
+    width: 500px;
+    min-width: 450px;
+    .el-dialog__body {
+      .el-input__inner {
+        width: 250px;
+      }
+    }
+  }
+}
+</style>

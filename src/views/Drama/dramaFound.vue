@@ -1,33 +1,9 @@
 <template>
   <div class="page-content-container">
-    <!-- <div  :disabled="true" v-if="this.id"> -->
     <bread-crumb></bread-crumb>
     <div class="drama-type">
-      <!-- <el-form :model="classify" ref="addAdmin">
-        <el-form-item
-          label="剧本类型"
-          prop="dramaListId"
-          :rules="[
-            { required: true, message: '选择不能为空', trigger: 'blur' },
-          ]"
-        >
-          <el-select
-            v-model="form.dramaListId"
-            multiple
-            placeholder="请选择角色"
-          >
-            <el-option
-              v-for="item in dramaOptions"
-              :key="item.classify"
-          :label="item.label"
-          :value="item.classify"
-              ></el-option
-            >
-          </el-select>
-        </el-form-item>
-      </el-form> -->
       <el-select
-        v-model="classify"
+        v-model="dramaContent.category_id"
         @change="handleChange"
         placeholder="剧本类型"
       >
@@ -84,25 +60,7 @@
               v-model="dramaContent.content"
               ref="myQuillEditor"
               :options="editorOption"
-              @focus="onEditorFocus($event)"
-              @blur="onEditorBlur($event)"
-              @change="onEditorChange($event)"
-              class="editor"
             ></quill-editor>
-            <!-- <quill-editor
-              v-model="dramaContent.content"
-              ref="myQuillEditor"
-              :options="editorOption"
-            >
-            </quill-editor> -->
-            <!-- <el-input
-              class="input"
-              type="textarea"
-              :rows="6"
-              placeholder="请输入剧本的内容"
-              v-model="dramaContent.content"
-            >
-            </el-input> -->
           </el-form-item>
         </el-form>
       </div>
@@ -144,16 +102,7 @@
             @focus="onEditorFocus($event)"
             @blur="onEditorBlur($event)"
             @change="onEditorChange($event)"
-            class="editor"
           ></quill-editor>
-          <!-- <el-input
-            class="host-box"
-            type="textarea"
-            :rows="6"
-            placeholder="请输入主持人的内容"
-            v-model="dramaContent.dm"
-          >
-          </el-input> -->
         </el-form-item>
         <el-form-item
           label="复盘内容"
@@ -167,16 +116,20 @@
             @focus="onEditorFocus($event)"
             @blur="onEditorBlur($event)"
             @change="onEditorChange($event)"
-            class="editor"
           ></quill-editor>
-          <!-- <el-input
-            class="host-box"
-            type="textarea"
-            :rows="6"
-            placeholder="请输入复盘的内容"
-            v-model="dramaContent.replay"
-          >
-          </el-input> -->
+        </el-form-item>
+        <el-form-item
+          label="下载地址"
+          prop="name"
+          :rules="[{ required: true, message: '地址不能为空' }]"
+        >
+          <el-input
+            class="input"
+            type="name"
+            placeholder="请输入地址"
+            v-model="dramaContent.resource_url"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
         <el-radio
           style="margin-left: 30px"
@@ -187,14 +140,53 @@
         <el-radio v-model="dramaContent.status" label="1">下线</el-radio>
       </el-form>
     </div>
+    <div class="roles-title">
+      <p class="title">角色框架</p>
+    </div>
     <div class="role-box">
-      <p>角色介绍</p>
+      <div class="role" v-for="item in rolesList" :key="item.name">
+        <img />
+        <p class="role-name">{{ item.name }}</p>
+        <p class="role-content">{{ item.content }}</p>
+      </div>
+    </div>
+    <div class="add-role">
+      <el-button class="add-button" type="success" @click="addRole"
+        >添加角色</el-button
+      >
       <div class="roles">
-        <div class="role">
-          <img />
-          <p class="role-name">{{ dramaContent.roles }}</p>
-          <p class="role-content">介绍</p>
-        </div>
+        <el-form
+          :model="roles"
+          ref="roles"
+          label-width="100px"
+          class="demo-ruleForm"
+        >
+          <el-form-item
+            label="角色名称"
+            prop="name"
+            :rules="[
+              { required: true, message: '名称不能为空', trigger: 'blur' },
+            ]"
+          >
+            <el-input
+              class="input"
+              placeholder="请输入角色名字"
+              v-model="roles.name"
+              autocomplete="off"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="角色介绍"
+            prop="content"
+            :rules="[{ required: true, message: '名称不能为空' }]"
+          >
+            <quill-editor
+              v-model="roles.content"
+              ref="myQuillEditor"
+              :options="editorOption"
+            ></quill-editor>
+          </el-form-item>
+        </el-form>
       </div>
       <div style="display: flex; justify-content: center; margin-top: 20px">
         <el-button
@@ -209,15 +201,57 @@
         >
       </div>
     </div>
-    <!-- </div> -->
   </div>
 </template>
 
 <script>
 import Drama from "@/global/service/drama.js";
 import qiniuService from "@/global/service/qiniu.js";
-
 import { quillEditor } from "vue-quill-editor";
+const uploadConfig = {
+  name: "image_url",
+  size: 500, // 图片大小，单位为Kb, 1M = 1024Kb
+  accept: "image/png, image/gif, image/jpeg", // 可选 可上传的图片格式
+};
+const toolbarOptions = [
+  ["bold", "italic", "underline", "strike"],
+  ["blockquote", "code-block"],
+  [{ header: 1 }, { header: 2 }],
+  [{ list: "ordered" }, { list: "bullet" }],
+  [{ script: "sub" }, { script: "super" }],
+  [{ indent: "-1" }, { indent: "+1" }],
+  [{ direction: "rtl" }],
+  [{ size: ["small", false, "large", "huge"] }],
+  [{ header: [1, 2, 3, 4, 5, 6, false] }],
+  [{ color: [] }, { background: [] }],
+  [{ font: [] }],
+  [{ align: [] }],
+  ["clean"],
+  ["link", "image", "video"],
+];
+const handlers = {
+  image: function () {
+    let fileInput = document.createElement("input");
+    fileInput.setAttribute("type", "file");
+    fileInput.setAttribute("accept", uploadConfig.accept);
+    fileInput.classList.add("ql-image");
+    fileInput.addEventListener("change", () => {
+      const file = fileInput.files[0];
+      if (uploadConfig.size && file.size >= uploadConfig.size * 1024) {
+        fileInput.value = "";
+        return;
+      }
+      qiniuService
+        .start({ file }, () => {})
+        .then((res) => {
+          let length = this.quill.getSelection(true).index;
+          this.quill.insertEmbed(length, "image", res.imageUrl);
+          this.quill.setSelection(length + 1);
+        });
+    });
+    fileInput.click();
+  },
+};
 export default {
   components: {
     quillEditor,
@@ -234,10 +268,20 @@ export default {
       classify: "", //分类
       dramaContent: {},
       imageUrl: "",
+      uploadLimit: 500,
       loading: false,
       status: "",
       url: "",
-      editorOption: {},
+      editorOption: {
+        modules: {
+          toolbar: {
+            container: toolbarOptions,
+            handlers: handlers,
+          },
+        },
+      },
+      roles: {},
+      rolesList: [],
     };
   },
   props: {
@@ -253,25 +297,23 @@ export default {
     this.categoryGet();
   },
   methods: {
-    // 准备富文本编辑器
-    onEditorReady() {},
     // 富文本编辑器 失去焦点事件
     onEditorBlur() {},
     // 富文本编辑器 获得焦点事件
     onEditorFocus() {},
     // 富文本编辑器 内容改变事件
     onEditorChange() {},
+
     dramaDetails() {
       Drama.dramaDetails(this.id).then((res) => {
-        this.dramaContent = res.data;
+        if (res.data) this.dramaContent = res.data;
+        if (res.data.roles) this.rolesList = JSON.parse(res.data.roles);
         this.dramaContent.status = String(this.dramaContent.status);
-        console.log(res);
       });
     },
     categoryGet() {
       Drama.categoryGet().then((res) => {
         this.dramaOptions = res.data;
-        console.log(res);
       });
     },
     handleChange() {
@@ -315,18 +357,19 @@ export default {
       this.$refs["dramaContent"].validate((valid) => {
         if (valid) {
           Drama.dramaPost({
-            // name: this.dramaOptions.name,
+            category_id: this.dramaContent.category_id,
             name: this.dramaContent.name,
             peoples: this.dramaContent.peoples,
             content: this.dramaContent.content,
             dm: this.dramaContent.dm,
             replay: this.dramaContent.replay,
             status: this.dramaContent.status,
-            roles: this.dramaContent.roles,
+            roles: this.rolesList,
             cover_url: this.dramaContent.cover_url,
+            resource_url: this.dramaContent.resource_url,
           }).then((res) => {
             this.$message.success(res.msg);
-            // this.dramaContent =null;
+            this.$router.push({ name: "List" });
           });
         }
       });
@@ -335,17 +378,28 @@ export default {
       this.$refs["dramaContent"].validate((valid) => {
         if (valid) {
           Drama.dramaEdit(this.id, {
+            category_id: this.dramaContent.category_id,
             name: this.dramaContent.name,
             peoples: this.dramaContent.peoples,
             content: this.dramaContent.content,
             dm: this.dramaContent.dm,
             replay: this.dramaContent.replay,
             status: this.dramaContent.status,
+            roles: this.rolesList,
             cover_url: this.dramaContent.cover_url,
+            resource_url: this.dramaContent.resource_url,
           }).then((res) => {
             this.$message.success(res.msg);
             this.$router.push({ name: "List" });
           });
+        }
+      });
+    },
+    addRole() {
+      this.$refs["roles"].validate((valid) => {
+        if (valid) {
+          this.rolesList.push({ ...this.roles });
+          this.roles = {};
         }
       });
     },
@@ -367,11 +421,29 @@ export default {
     background-color: white;
     padding: 20px 30px 20px 0;
     border-bottom: 8px solid #f0f2f5;
-    .drama-content {
-      .quill-editor .editor {
-        width: 77%;
-      }
+  }
+  .roles-title {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    margin: 10px 0 16px 0;
+    text-align: center;
+    .title {
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      background-color: white;
+      width: 95px;
     }
+  }
+  .roles-title:before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    top: 50%;
+    background-color: #dcdfe6;
+    left: 0%;
   }
   .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
@@ -392,20 +464,25 @@ export default {
     text-align: center;
   }
   .avatar {
-    // width: 178px;
     height: 200px;
     display: block;
   }
-  // .host-box {
-  //   width: 800px;
-  // }
-  .role-box {
+  .add-role {
     background-color: white;
     padding: 20px 20px 20px 20px;
-    .roles {
-      display: grid;
-      grid-template-columns: repeat(4, 25%);
+    .add-button {
+      margin-left: 2%;
     }
+  }
+  .roles {
+    margin-top: 30px;
+  }
+  .role-box {
+    display: grid;
+    grid-template-columns: repeat(4, 25%);
+    background-color: white;
+    padding: 20px 20px 20px 20px;
+    border-bottom: 8px solid #f0f2f5;
     .role {
       display: grid;
       justify-content: center;
@@ -426,9 +503,6 @@ export default {
     .role-add {
       text-align: center;
     }
-  }
-  .quill-editor .editor {
-    width: 77%;
   }
 }
 </style>

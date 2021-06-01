@@ -21,7 +21,7 @@ export default [
         path: "",
         name: "User",
         component: { render: (h) => h("router-view") },
-        //permission:"roles-list",
+        permission: "users-list",
         meta: {
           breadcrumb: {
             title: "用户",
@@ -84,6 +84,7 @@ export default [
         path: "",
         // name: "Member",
         component: { render: (h) => h("router-view") },
+        permission: "vip-list",
         meta: {
           breadcrumb: {
             title: "充值列表",

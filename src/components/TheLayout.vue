@@ -145,12 +145,12 @@ export default {
   },
   created() {
     this.getmy();
-    this.getRoutes();
   },
   methods: {
     getmy() {
       Authority.getMy().then((res) => {
         this.$store.commit("AUTH", res.data.permissions);
+        this.getRoutes();
       });
     },
     getRoutes() {

@@ -131,7 +131,7 @@ export default {
       formLabelWidth: "120px",
       value: "",
       row: {},
-      page_size: 10,
+      page_size: 20,
       currentPage: 1,
     };
   },
@@ -222,7 +222,6 @@ export default {
   width: 80px;
   height: 30px;
   right: 20px;
-  // position: absolute;
   top: 30px;
   border-radius: 3px;
 }
@@ -251,5 +250,8 @@ export default {
   .el-table td div {
     margin-left: 50px;
   }
+}
+.el-dialog--center {
+  min-width: 500px;
 }
 </style>

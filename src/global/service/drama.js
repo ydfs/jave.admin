@@ -5,8 +5,8 @@ const Drama = {
   dramaPost: (params) => {
     return request.post(API.drama, params);
   },
-  dramaGet: ({ page }) => {
-    return request.get(API.drama, { page });
+  dramaGet: ({ page, category_id }) => {
+    return request.get(API.drama, { page, category_id });
   },
   dramaDetails: (id) => {
     return request.get(`${API.drama}/${id}`);
@@ -26,8 +26,8 @@ const Drama = {
   categoryDetail: (id) => {
     return request.get(`${API.dramaClassify}/${id}`);
   },
-  categoryPut: (id) => {
-    return request.put(`${API.dramaClassify}/${id}`);
+  categoryPut: (id, name) => {
+    return request.put(`${API.dramaClassify}/${id}`, name);
   },
   categoryDelete: (id) => {
     return request.delete(`${API.dramaClassify}/${id}`);

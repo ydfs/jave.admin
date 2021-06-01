@@ -22,14 +22,13 @@ export default [
       {
         path: "",
         component: { render: (h) => h("router-view") },
+        permission: "book-category-list",
         children: [
           {
             path: "classify",
             name: "Classify",
             component: dramaClassify,
-            // permission: "",
             meta: {
-              // title: "剧本分类",
               breadcrumb: {
                 title: "剧本分类",
                 replace: true,
@@ -44,6 +43,7 @@ export default [
       {
         path: "",
         component: { render: (h) => h("router-view") },
+        permission: "books-list",
         meta: {
           breadcrumb: {
             title: "剧本列表",

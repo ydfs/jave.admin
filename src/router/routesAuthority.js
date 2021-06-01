@@ -20,6 +20,7 @@ export default [
         path: "authority",
         redirect: { name: "admin" },
         component: { render: (h) => h("router-view") },
+        permission: "administrators-list",
         meta: {
           breadcrumb: {
             title: "管理员",
@@ -48,7 +49,7 @@ export default [
             path: "",
             name: "Role",
             component: { render: (h) => h("router-view") },
-            //permission:"roles-list",
+            permission: "roles-list",
             meta: {
               breadcrumb: {
                 title: "角色",

@@ -3,7 +3,7 @@
     <bread-crumb></bread-crumb>
     <div class="drama-top">
       <el-select
-        v-model="classify"
+        v-model="category_id"
         @change="handleChange"
         placeholder="剧本分类"
       >
@@ -23,7 +23,12 @@
           (currentPage - 1) * page_size + (scope.$index + 1)
         }}</template>
       </el-table-column>
-      <el-table-column prop="nickname" label="类型" width="60">
+      <el-table-column
+        prop="category_id"
+        :formatter="formatter"
+        label="类型"
+        width="60"
+      >
       </el-table-column>
       <el-table-column prop="name" label="剧本名" width="260">
       </el-table-column>
@@ -60,7 +65,7 @@ export default {
   data() {
     return {
       dramaOptions: [],
-      classify: "",
+      category_id: "",
       tableData: [],
       currentPage: 1,
       page_size: 10,
@@ -72,6 +77,11 @@ export default {
     this.dramaGet();
   },
   methods: {
+    formatter(row) {
+      return this.dramaOptions.find((data) => data.id == row.category_id)
+        ? this.dramaOptions.find((data) => data.id == row.category_id).name
+        : "";
+    },
     dramaGet() {
       Drama.dramaGet({ page: this.currentPage }).then((res) => {
         this.tableData = res.data.list;
@@ -84,13 +94,19 @@ export default {
       });
     },
     handleChange() {
-      console.log(this.classify);
+      console.log(this.category_id);
+      Drama.dramaGet({ category_id: this.category_id }).then((res) => {
+        this.tableData = res.data.list;
+        this.pagination = res.data.pagination;
+        console.log(res);
+      });
     },
     handleEdit(row) {
       this.$router.push({
         name: "dramaDetails",
         params: { id: String(row.id) },
       });
+      console.log(row, 123);
     },
     handleDelete(row) {
       Drama.dramaDelete(row.id).then((res) => {
