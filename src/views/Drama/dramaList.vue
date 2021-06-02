@@ -6,7 +6,7 @@
         v-model="category_id"
         @change="handleChange"
         placeholder="剧本分类"
-      >
+        ><el-option label="全部" value=""></el-option>
         <el-option
           v-for="item in dramaOptions"
           :key="item.id"
@@ -86,27 +86,27 @@ export default {
       Drama.dramaGet({ page: this.currentPage }).then((res) => {
         this.tableData = res.data.list;
         this.pagination = res.data.pagination;
-        console.log(res);
       });
       Drama.categoryGet().then((res) => {
         this.dramaOptions = res.data;
-        console.log(res);
       });
     },
     handleChange() {
-      console.log(this.category_id);
-      Drama.dramaGet({ category_id: this.category_id }).then((res) => {
-        this.tableData = res.data.list;
-        this.pagination = res.data.pagination;
-        console.log(res);
-      });
+      this.currentPage = 1;
+      if (this.category_id == "") {
+        this.dramaGet();
+      } else {
+        Drama.dramaGet({ category_id: this.category_id }).then((res) => {
+          this.tableData = res.data.list;
+          this.pagination = res.data.pagination;
+        });
+      }
     },
     handleEdit(row) {
       this.$router.push({
         name: "dramaDetails",
         params: { id: String(row.id) },
       });
-      console.log(row, 123);
     },
     handleDelete(row) {
       Drama.dramaDelete(row.id).then((res) => {

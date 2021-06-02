@@ -72,7 +72,6 @@ export default {
     categoryGet() {
       Category.categoryGet().then((res) => {
         this.tableData = res.data;
-        console.log(res);
       });
     },
     handleEdit(row) {
