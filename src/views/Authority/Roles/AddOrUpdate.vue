@@ -97,7 +97,6 @@ export default {
     if (this.id) {
       Role.getDetail(this.id).then((res) => {
         this.ValidateForm = res.data;
-        console.log(res);
         this.checkList = res.data.permissions; //双向绑定,从res（网页）中得到的数据返回到this.xxx中
       });
     }

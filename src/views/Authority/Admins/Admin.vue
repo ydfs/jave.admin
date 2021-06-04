@@ -179,11 +179,6 @@ export default {
       this.dialogVisible = false;
       this.managerlist();
     },
-    // handleSumbit(row) {
-    //   Role.managerPut(row.id).then((res) => {
-    //     console.log(res);
-    //   });
-    // },
     handleDelete(row) {
       Role.managerDelete(row.id).then((res) => {
         this.$message.success(res.msg);

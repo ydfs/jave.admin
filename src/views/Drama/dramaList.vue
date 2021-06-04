@@ -32,7 +32,8 @@
       </el-table-column>
       <el-table-column prop="name" label="剧本名" width="260">
       </el-table-column>
-      <el-table-column prop="content" label="简介"> </el-table-column>
+      <el-table-column prop="content" label="简介" show-overflow-tooltip>
+      </el-table-column>
       <el-table-column prop="peoples" label="可参与人数" width="90">
       </el-table-column>
       <el-table-column label="操作" width="100">
