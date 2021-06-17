@@ -32,7 +32,7 @@ export default {
   data() {
     return {
       tableData: [],
-      page_size: 10,
+      page_size: 20,
       currentPage: 1,
     };
   },
@@ -43,6 +43,7 @@ export default {
     getList() {
       Role.getList().then((res) => {
         this.tableData = res.data.reverse();
+        console.log(res);
       });
     },
     handleEdit(row) {

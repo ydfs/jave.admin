@@ -192,7 +192,6 @@ export default {
       });
       this.dialogFormVisible = false;
     },
-
     loadAll() {
       Users.usersGet({}).then((res) => {
         let total = res.data.pagination.total;
@@ -247,5 +246,8 @@ export default {
   //   display: flex;
   //   justify-content: space-between;
   // }
+  .el-input-number__increase {
+    right: -69px;
+  }
 }
 </style>
