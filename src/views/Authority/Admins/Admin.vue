@@ -94,11 +94,20 @@
           <span class="separator"></span>
           <el-button
             size="mini"
-            style="color: red"
+            style="color: #ff0000"
             type="text"
-            @click="handleDelete(scope.row)"
+            @click="deletet(scope.row.id)"
             >删除</el-button
           >
+          <el-dialog title="提示" :visible.sync="dialogDelete" width="30%">
+            <span>确定删除吗？</span>
+            <span slot="footer" class="dialog-footer">
+              <el-button @click="dialogDelete = false">取 消</el-button>
+              <el-button type="primary" @click="handleDelete()"
+                >确 定</el-button
+              >
+            </span>
+          </el-dialog>
           <edit-admin
             :visible.sync="dialogVisible"
             @dialog_close="handleClose"
@@ -123,6 +132,8 @@ export default {
       roleOptions: [],
       dialogFormVisible: false,
       dialogVisible: false,
+      dialogDelete: false,
+      deleteId: 0,
       form: {
         phone: "",
         region: [],
@@ -179,9 +190,14 @@ export default {
       this.dialogVisible = false;
       this.managerlist();
     },
-    handleDelete(row) {
-      Role.managerDelete(row.id).then((res) => {
+    deletet(deleteId) {
+      this.dialogDelete = true;
+      this.deleteId = deleteId;
+    },
+    handleDelete() {
+      Role.managerDelete(this.deleteId).then((res) => {
         this.$message.success(res.msg);
+        this.dialogDelete = false;
         this.managerlist();
       });
     },
